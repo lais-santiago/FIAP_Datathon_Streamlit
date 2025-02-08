@@ -11,13 +11,13 @@ st.set_page_config(page_title="Passos Mágicos - Dashboard", layout="wide")
 # Carregar os dados
 @st.cache_data
 def load_data():
-    df = pd.read_csv("data/dados_consolidados.csv")  # Substitua pelo caminho correto
+    df = pd.read_csv("df_consolidado.csv", delimiter=";")  
     return df
 
 df = load_data()
 
-# Criar menu de navegação
-menu = st.sidebar.radio("Navegação", ["Dashboard", "Relatório"])
+st.sidebar.header("Navegação")
+menu = st.sidebar.radio("Selecione a página que quer visualizar:", ["Dashboard", "Relatório"])
 
 if menu == "Dashboard":
     from dashboard import show_dashboard
