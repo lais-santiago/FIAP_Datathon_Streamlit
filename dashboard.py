@@ -30,6 +30,8 @@ def show_dashboard(df):
 
     st.metric(label="Média Índice de Desenvolvimento Educacional (INDE)", value=round(inde_medio, 2))
 
+    st.markdown("O __INDE__ (Índice do Desenvolvimento Educacional) trata-se da medida síntese do processo avaliativo da Passos Mágicos, composto por uma dimensão acadêmica, uma dimensão psicossocial e uma dimensão psicopedagógica. Essas dimensões são observadas por meio do resultado de sete indicadores (__IAN, IDA, IEG, IAA, IPS, IPP e IPV__), que aglutinados por ponderação, formam o índice sintético (__INDE__).")
+
     st.markdown("#### 📚 __Média dos Indicadores que compõem o INDE__")
 
     col1, col2, col3, col4 = st.columns(4)
@@ -77,49 +79,6 @@ def show_dashboard(df):
     with col4:
         st.metric(label="🟠 Topázio", value=f"{percentuais['topazio']:.2f}%")
 
-    anos = np.array([2022, 2023, 2024])
-    
-    st.subheader("📊 Evolução dos Indicadores  (2022-2024)")
-    fig, ax = plt.subplots(figsize=(10, 4))
-    sns.lineplot(data=df, x="ano", y="inde", label="INDE", marker="o")
-    ax.set_xticks(anos)
-    plt.legend(loc='lower left')
-    plt.xlabel("Ano")
-    plt.ylabel("Pontuação Média")
-    plt.title("Evolução do Índice de Desenvolvimento Educacional (INDE)")
-    st.pyplot(fig)
-
-    fig, ax = plt.subplots(figsize=(10, 4))
-    sns.lineplot(data=df, x="ano", y="ian", label="IAN", marker="o")
-    sns.lineplot(data=df, x="ano", y="ida", label="IDA", marker="o")
-    sns.lineplot(data=df, x="ano", y="ieg", label="IEG", marker="o")
-    ax.set_xticks(anos)
-    plt.legend(loc='best')
-    plt.xlabel("Ano")
-    plt.ylabel("Pontuação Média")
-    plt.title("Evolução dos Indicadores de Dimensão Acadêmica")
-    st.pyplot(fig)
-
-    fig, ax = plt.subplots(figsize=(10, 4))
-    sns.lineplot(data=df, x="ano", y="iaa", label="IAA", marker="o")
-    sns.lineplot(data=df, x="ano", y="ips", label="IPS", marker="o")
-    ax.set_xticks(anos)
-    plt.legend(loc='best')
-    plt.xlabel("Ano")
-    plt.ylabel("Pontuação Média")
-    plt.title("Evolução dos Indicadores de Dimensão Psicossocial")
-    st.pyplot(fig)
-
-    fig, ax = plt.subplots(figsize=(10, 4))
-    sns.lineplot(data=df, x="ano", y="ipp", label="IPP", marker="o")
-    sns.lineplot(data=df, x="ano", y="ipv", label="IPV", marker="o")
-    ax.set_xticks(anos)
-    plt.legend(loc='best')
-    plt.xlabel("Ano")
-    plt.ylabel("Pontuação Média")
-    plt.title("Evolução dos Indicadores de Dimensão Psicopedagógica")
-    st.pyplot(fig)
-
     st.markdown("---")
 
     # Comparação por Fase
@@ -137,7 +96,7 @@ def show_dashboard(df):
     st.subheader(f"👨‍🎓👩‍🎓 Desempenho por Gênero e Instituição no ano {ano_selecionado}")
 
     # Criando a coluna 'instituicao' com base nas colunas existentes
-    df["instituicao"] = df_selecionado.apply(
+    df_selecionado["instituicao"] = df_selecionado.apply(
         lambda row: "publica" if row["instituicao_publica"] == 1 else 
                     "privada" if row["instituicao_privada"] == 1 else 
                     "nao informado", axis=1
@@ -277,6 +236,8 @@ def show_dashboard(df):
         else:
             st.write("🔻 O aluno tem **baixa probabilidade** de ser indicado para bolsa.")
 
+    st.markdown("<p style='text-align: right;'>by Laís Santiago Ribeiro - RM356012 - Grupo 67</p>", unsafe_allow_html=True)
+
 
 def cria_modelo(df, indicadores):
     # Definição de variáveis
@@ -292,6 +253,6 @@ def cria_modelo(df, indicadores):
 
     # Avaliação do modelo
     y_pred = modelo.predict(X_test)
-    print(f"Acurácia do Modelo: {accuracy_score(y_test, y_pred):.2f}")
+    acuracia = accuracy_score(y_test, y_pred)
 
-    return modelo
+    return modelo, acuracia
