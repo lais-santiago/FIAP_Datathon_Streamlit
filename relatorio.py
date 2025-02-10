@@ -18,6 +18,60 @@ def show_report(df):
     st.write("""
     Os dados passaram por limpeza, padronização e criação de novas variáveis. Foram feitas análises descritivas e preditivas para entender os fatores que impactam o sucesso dos alunos.
              
+    \n\nForam fornecidas 3 bases, sendo uma para cada ano: 2022, 2023 e 2024, mas com divergência nas colunas.
+             
+    \n\nPara a base do ano de __2022__ foram realizados os seguintes tratamentos:
+    \n\n-    Foi removida uma linha do dataframe, que era composta somente de valores inválidos (NaN).
+    \n\n-    Foi identificado que faltava a informação de um dos indicadores (IPP), que foi obtido através de outra base de 2022, que foi fornecida no desafio na versão original. Como a base nova tinha mais informações, essa coluna foi criada base nova, sendo preenchida com o valor da antiga, cruzando pelo valor da coluna CG (Classificação Geral).
+    \n\n-    Foram renomeadas as colunas seguindo o padrão snake_case
+    \n\n-    As colunas fase, ano_nascimento, classificacao_fase, classificacao_turma e quantidade_avaliadores tiveram seu formato adequado para int
+    \n\n-    Foi criada uma coluna de ano, com valor fixo de 2022   
+
+    \n\nPara a base do ano de __2023__ foram realizados os seguintes tratamentos:
+    \n\n-    Não foram encontradas nem linhas duplicadas, nem linhas com valor 'NaN' em todas as colunas
+    \n\n-    As colunas foram renomeadas para o padrão snake_case
+    \n\n-    A coluna fase possuía um domínio diferente do dataframe de 2022, portanto os valores foram convertidos conforme abaixo:
+             \n\n\tALFA > 0
+             \n\n\tFASE 1 > 1
+             \n\n\tFASE 2 > 2
+             \n\n\tFASE 3 > 3
+             \n\n\tFASE 4 > 4
+             \n\n\tFASE 5 > 5
+             \n\n\tFASE 6 > 6
+             \n\n\tFASE 7 > 7
+             \n\n\tFASE 8 > 8
+    \n\n-    A coluna turma possuía também um domínio diferente do dataframe de 2022, sendo composta pela fase + turma, como por exemplo '1A', de onde foi extraída somente a letra 'A'.
+    \n\n-    Como no dataframe de 2022 havia uma coluna de ano_nascimento, enquanto que no de 2023 há uma coluna de data_nascimento, para equiparar os dataframes essa coluna foi convertida em datetime e dela foi extraído o ano de nascimento.
+    \n\n-    Como no dataframe de 2022 havia uma coluna de idade, essa coluna foi gerada nesse dataframe subtraindo a data de 01.01.2024 da data de nascimento.
+    \n\n-    As colunas inde, inde_2022, iaa, ieg, ips, ipp, ida, nota_matematica, nota_portugues, nota_ingles, ipv e ian estavam com formato object, então foram convertidas para float.
+    \n\n-    Foi criada uma coluna de ano, com valor fixo de 2023.
+
+    \n\nPara a base do ano de __2024__ foram realizados os seguintes tratamentos:
+    \n\n-    Não foram encontradas nem linhas duplicadas, nem linhas com valor 'NaN' em todas as colunas
+    \n\n-    As colunas foram renomeadas para o padrão snake_case.
+    \n\n-    Tanto a coluna fase, quanto a coluna turma tinha os valores misturados, como por exemplo '1A'. Dessa forma os valores foram separados em '1'para fase e 'A' para turma, nesse caso.
+    \n\n-    Como no dataframe de 2022 havia uma coluna de ano_nascimento, enquanto que no de 2024 há uma coluna de data_nascimento, para equiparar os dataframes essa coluna foi convertida em datetime e dela foi extraído o ano de nascimento.
+    \n\n-    As colunas inde, inde_2022, inde_2023, iaa, ieg, ips, ipp, ida, nota_matematica, nota_portugues, nota_ingles, ipv e ian estavam com formato object, então foram convertidas para float.
+    \n\n-    As colunas recomendacao_avaliador_3 e recomendacao_avaliador_4 não estavam preenchidas para nenhum aluno. Mas como para os outros anos essa coluna existia, foi atribuído o valor fixo de "não avaliado" para todas as linhas.
+    \n\n-    Foi criada uma coluna de ano, com valor fixo de 2024.
+             
+    \n\nForam então eliminadas colunas que não seriam utilizadas na análise e os dataframes foram concatenados em um único dataframe.
+    \n\nCom o novo dataframe gerado, algumas colunas foram normalizadas:
+             \n\n-    A coluna genero que possuia 4 tipos de valores (Feminino, Masculino, Menino e Menina) teve seus valores convertidos para somente 2 tipos de valores (Feminino e Masculino). Foi aplicado então one-hot encoding nessa coluna, criando duas novas com valores 0 e 1, com os nomes feminino e masculino.
+             \n\n-    A coluna instituicao_ensino tinha diversos valores, dentre eles alguns valores indicavam que o aluno era bolsista. Como já havia uma coluna indicado_bolsa, que não tinha todos os valores preenchidos, essa informação foi extraída e foi alimentada na coluna indicado_bolsa, onde haviam dados faltantes.
+             \n\n-    Os valores de instituicao_ensino foram reclassificados para instituicao_publica, instituicao_privada e nao_informado (quando não era possível associar a nenhum dos 2 outros valores). Posteriormente foi aplicado o one-hot encoding nessa coluna.
+             \n\n-    Foi identificado que alguns valores de inde não estavam preenchidos, mas com os valores dos outros indicadores foram aplicadas as fórmulas para obter os valores, quando a fase é de 0 a 7 e quando a fase é 8.
+             \n\n-    Como alguns valores de pedra não foram preenchidos, eles foram determinados com base no valor de inde.
+             \n\n-    Foi aplicado o Ordinal Encoding nas colunas de recomendação dos avaliadores.
+             \n\n-    Foi aplicado o Label Enconding na coluna de recomendação psicologia.
+             \n\n-    Foi identificado que na coluna atingiu_ponto_virada não havia valores em algumas linhas. Então os valores faltantes foram preenchidos com base no indicador ipv.
+             \n\n-    Na coluna fase ideal foi extraído apenas o número da fase, dentre outros textos.
+             \n\n-    As colunas destaque_ieg, destaque_ida e destaque_ipv possuiam algumas linhas sem valores, mas como os possíveis valores eram destaque ou melhorar, os valores faltantes foram alimentados de acordo com a nota dos respectivos indicadores.
+             \n\n-    A coluna classificacao_geral tinha valores faltantes, que foram preenchidos com base no ano e a nota inde.
+             \n\n-    A coluna classificacao_fase tinha valores faltantes, que foram preenchidos com base no ano, fase e a nota inde.
+             \n\n-    A coluna classificacao_turma tinha valores faltantes, que foram preenchidos com base no ano, fase, turma e a nota inde.
+
+    \n\n Por fim o dataframe foi convertido em arquivo .csv que foi utilizado na análise realizada neste projeto Stremlit.
     """)
 
     st.header("3️⃣ Análises Realizadas")
