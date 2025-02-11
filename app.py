@@ -17,7 +17,7 @@ def load_data():
 df = load_data()
 
 st.sidebar.header("Navegação")
-menu = st.sidebar.radio("Selecione a página que quer visualizar:", ["Dashboard", "Relatório"])
+menu = st.sidebar.radio("Selecione a página que quer visualizar:", ["Dashboard", "Relatório", "Previsão"])
 
 if menu == "Dashboard":
     from dashboard import show_dashboard
@@ -25,3 +25,6 @@ if menu == "Dashboard":
 elif menu == "Relatório":
     from relatorio import show_report
     show_report(df)
+elif menu =="Previsão":
+    from previsao import show_previsao
+    show_previsao(df)
