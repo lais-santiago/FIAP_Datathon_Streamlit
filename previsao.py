@@ -1,8 +1,11 @@
 import streamlit as st
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+from imblearn.over_sampling import SMOTE
+
 
 def show_previsao(df):
 
@@ -44,9 +47,21 @@ def show_previsao(df):
 
 
 def cria_modelo(df, indicadores):
+    print("Quantidades indicado_bolsa original: ", df['indicado_bolsa'].value_counts())
+
     # Definição de variáveis
     X = df[indicadores]
     y = df["indicado_bolsa"]
+
+    # Aplicar SMOTE
+    smote = SMOTE(sampling_strategy='auto', random_state=42)
+    X_resampled, y_resampled = smote.fit_resample(X, y)
+
+    # Criar novo DataFrame balanceado
+    df_resampled = pd.concat([pd.DataFrame(X_resampled, columns=X.columns), pd.DataFrame(y_resampled, columns=['indicado_bolsa'])], axis=1)
+
+    # Verificar novas quantidades
+    print("Quantidades indicado_bolsa resampled: ",df_resampled['indicado_bolsa'].value_counts())
 
     # Separando os dados para treino e teste
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)

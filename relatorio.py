@@ -3,7 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-import dashboard as dash
 
 def show_report(df):
     st.title("📄 Relatório Analítico")
@@ -250,15 +249,6 @@ def show_report(df):
         st.write("Ao analisar os outliers do indicador INDE por gênero é possível identificar que tanto no público de alunos do gênero feminino, quanto do masculino, a concentração de alunos que tiveram melhor pontuação no indicador INDE, ficaram entre 6,5 e 8. Enquanto que alunos que requerem atenção, são alunos que ficaram abaixo de 4,5.")
         st.write("Ao analisar os outliers do indicador INDE por instituição de ensino, os alunos que frequentam instituições públicas tiveram um comportamento similar ao analisado em relação ao gênero. Porém nos alunos de instituição privada e de instituições não informadas os valores ficaram muito mais distribuídos, variando de 1 a 8.")
         st.write("Considerando os alunos que atingiram o ponto de virada, perante os alunos que não atingiram, identificamos que nos que atingiram a concentração de pontuação INDE mais altas estão concentrados entre 8 e 9, enquanto que os que não atingiram o ponto de virada a pontuação fica mais concentrada entre 6 e 8.")
-
-    st.subheader("🤖 Predição")
-
-    indicadores_previsao = ["idade", "fase", "iaa", "ieg", "ips", "ida", "ipv", "ian", "ipp"]
-    modelo, acuracia = dash.cria_modelo(df, indicadores_previsao)
-
-    acuracia = acuracia * 100
-
-    st.write(f"Para prever o desempenho futuro dos alunos com base em seus indicadores, utilizamos como variáveis de análise as colunas idade, fase, iaa, ieg, ips, ida, ipv, ian e ipp. O modelo utilizado foi o Random Forest que atingiu uma acurácia de {acuracia:.2f}%.")
 
     st.header("4️⃣ Conclusões e Recomendações")
     st.write("""
